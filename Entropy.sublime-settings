@@ -1,0 +1,10 @@
+// Place your settings in the file "User/Entropy.sublime-settings",
+// which overrides the settings in here.
+{
+    // Set to false to stop verifying SSL certificates for HTTPS requests
+    "verify_ssl_certificates" : true,
+
+    // Set to false to stop verifying if the code directory exists
+    // on the server and to automatically create it if it doesn't
+    "verify_code_directory" : true
+}

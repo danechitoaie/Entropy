@@ -1,0 +1,57 @@
+[
+    {
+        "id" : "tools",
+        "children" : [
+            {
+                "id" : "entropy_tools",
+                "caption" : "Entropy",
+                "children" : [
+                    {
+                        "caption" : "Server Configuration",
+                        "command" : "entropy_server_configuration"
+                    },
+                    {
+                        "caption" : "Clean Project",
+                        "command" : "entropy_clean_project"
+                    },
+                    {
+                        "caption" : "New Cartridge",
+                        "command" : "entropy_new_cartridge"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id" : "preferences",
+        "children" : [
+            {
+                "caption" : "Package Settings",
+                "mnemonic" : "P",
+                "id" : "package-settings",
+                "children" : [
+                    {
+                        "id" : "entropy_preferences",
+                        "caption" : "Entropy",
+                        "children" : [
+                            {
+                                "caption" : "Settings - Default",
+                                "command" : "open_file",
+                                "args" : {
+                                    "file": "${packages}/Entropy/Entropy.sublime-settings"
+                                }
+                            },
+                            {
+                                "caption" : "Settings - User",
+                                "command" : "open_file",
+                                "args" : {
+                                    "file": "${packages}/User/Entropy.sublime-settings"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

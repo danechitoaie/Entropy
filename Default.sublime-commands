@@ -1,0 +1,14 @@
+[
+    {
+        "caption" : "Entropy: Server Configuration",
+        "command" : "entropy_server_configuration"
+    },
+    {
+        "caption" : "Entropy: Clean Project",
+        "command" : "entropy_clean_project"
+    },
+    {
+        "caption" : "Entropy: New Cartridge",
+        "command" : "entropy_new_cartridge"
+    }
+]
