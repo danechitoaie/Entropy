@@ -24,12 +24,12 @@ class EntropyNewCartridgeCommand(sublime_plugin.WindowCommand):
         re_match   = re_pattern.match(name)
 
         if not re_match:
+            self.on_cancel()
             sublime.error_message("".join([
                     "ERROR!\n\n",
                     "Invalid cartridge name \"{0}\"!\n".format(name),
                     "Only ^[a-zA-Z0-9_]+$ values are allowed."
                 ]))
-            self.on_cancel()
             return
 
         self.cartridge_name = name
@@ -41,35 +41,35 @@ class EntropyNewCartridgeCommand(sublime_plugin.WindowCommand):
         cartridge_path = os.path.expanduser(path)
 
         if len(cartridge_path) < 1:
+            self.on_cancel()
             sublime.error_message("".join([
                     "ERROR!\n\n",
                     "Cartridge path is required!\n",
                 ]))
-            self.on_cancel()
             return
 
         if not os.path.exists(cartridge_path):
+            self.on_cancel()
             sublime.error_message("".join([
                     "ERROR!\n\n",
                     "\"{0}\" does not exist!".format(cartridge_path),
                 ]))
-            self.on_cancel()
             return
 
         if not os.path.isdir(cartridge_path):
+            self.on_cancel()
             sublime.error_message("".join([
                     "ERROR!\n\n",
                     "\"{0}\" is not a directory!".format(cartridge_path),
                 ]))
-            self.on_cancel()
             return
 
         if os.path.exists(os.path.join(cartridge_path, cartridge_name)):
+            self.on_cancel()
             sublime.error_message("".join([
                     "ERROR!\n\n",
                     "\"{0}\" already exists in \"{1}\"!".format(cartridge_name, cartridge_path),
                 ]))
-            self.on_cancel()
             return
 
         self.cartridge_name = None
