@@ -18,9 +18,9 @@ from .lib import exceptions
 
 class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
     def run(self):
-        sublime.set_timeout_async(lambda: self.clean_project_async(), 0)
+        sublime.set_timeout_async(lambda: self.clean_project(), 0)
 
-    def clean_project_async(self):
+    def clean_project(self):
         if not self.window.project_file_name():
             sublime.error_message("".join([
                     "ERROR!\n\n",
