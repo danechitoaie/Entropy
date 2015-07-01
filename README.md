@@ -27,9 +27,10 @@ Installation Options
 Configuration
 ---
 
-* `Preferences > Package Settings > Entropy` There are two options that you can configure for now: 
+* `Preferences > Package Settings > Entropy`:
     * `verify_ssl_certificates` if you want the HTTPS certificate to be validated or not when requests are being made to your sandbox.
     * `verify_code_directory` if you want to verify if the code directory that you selected exists on the server or if you want it to be automatically created for you
+    * `storefront_toolkit_integration` if you want to activate the Storefront Toolkit integration (this functionality is experimental so it's disabled by default).
 
 Usage
 ---
