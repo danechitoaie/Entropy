@@ -4,7 +4,15 @@
     // Set to false to stop verifying SSL certificates for HTTPS requests
     "verify_ssl_certificates" : true,
 
-    // Set to false to stop verifying if the code directory exists
-    // on the server and to automatically create it if it doesn't
-    "verify_code_directory" : true
+    // Set to false to stop verifying if the code directory exists on the server
+    // and to automatically create it if it doesn't
+    "verify_code_directory" : true,
+
+    // Set to true to enable the Storefront Toolkit integration (i.e. when clicking
+    // on a template link in the storefront using the SFT that template will open
+    // automatically in Sublime Text 3)
+    //
+    // NOTICE:
+    // This functionality is experimental and it's disabled by default
+    "storefront_toolkit_integration" : false
 }
