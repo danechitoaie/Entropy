@@ -18,6 +18,9 @@ from .lib import exceptions
 
 class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
     def run(self):
+        sublime.set_timeout_async(lambda: self.clean_project_async(), 0)
+
+    def clean_project_async(self):
         if not self.window.project_file_name():
             sublime.error_message("".join([
                     "ERROR!\n\n",
@@ -27,14 +30,15 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
                 ]))
             return
 
-        sublime.set_timeout_async(lambda: self.clean_project_async(), 0)
-
-    def clean_project_async(self):
         project_data = self.window.project_data()
         entropy_data = project_data.get(constants.PROJECT_DATA_KEY, {})
 
         # Check if Entropy is enabled for this window
         if entropy_data.get("enabled", "No") != "Yes":
+            sublime.error_message("".join([
+                    "ERROR!\n\n",
+                    "Entropy is not enabled for this project!",
+                ]))
             return
 
         dw_hostname  = entropy_data.get("hostname")
