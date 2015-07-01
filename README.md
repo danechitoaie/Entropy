@@ -10,13 +10,13 @@ Features
 * On save file upload to the sandbox
 * Clean project
 * Each server connection is tied to its own Sublime Text project (so you can be connected to multiple sandboxes at the same time as long as you have them in separate projects).
+* Storefront Toolkit integration (i.e. when you click "edit template" in Storefront Toolkit it will automatically be opened in Sublime Text)
 
 TODO
 ---
 
 * Detect files changed outside of Sublime Text and sync them with the sandbox
 * Script debugging
-* Storefront Toolkit integration (i.e. when you click "edit template" in Storefront Toolkit it will automatically be opened in Sublime Text)
 
 Installation Options
 ---
@@ -48,4 +48,3 @@ Make sure you add the cartridges directly and not the parent folder that contain
 * Cleanup the project `Tools > Entropy > Clean Project`. (For "Go To Anything" command `COMMAND/CONTROL + SHIFT + P` type `Entropy: Clean Project`)
 
 * Create new cartridge by running `Tools > Entropy > New Cartridge`. (For "Go To Anything" command `COMMAND/CONTROL + SHIFT + P` type `Entropy: New Cartridge`)
-
