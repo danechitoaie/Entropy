@@ -43,8 +43,8 @@ Make sure you add the cartridges directly and not the parent folder that contain
 
 ![ss1.png](https://bitbucket.org/repo/54M5Ga/images/3487319365-ss1.png)
 
-* Configure your server connection `Tools > Entropy > Server Configuration`. (For "Go To Anything" command `COMMAND/CONTROL + SHIFT + P` type `Entropy: Server Configuration`)
+* Configure your server connection `Tools > Entropy > Server Configuration`. (For "Command Palette" command `COMMAND/CONTROL + SHIFT + P` type `Entropy: Server Configuration`)
 
-* Cleanup the project `Tools > Entropy > Clean Project`. (For "Go To Anything" command `COMMAND/CONTROL + SHIFT + P` type `Entropy: Clean Project`)
+* Cleanup the project `Tools > Entropy > Clean Project`. (For "Command Palette" command `COMMAND/CONTROL + SHIFT + P` type `Entropy: Clean Project`)
 
-* Create new cartridge by running `Tools > Entropy > New Cartridge`. (For "Go To Anything" command `COMMAND/CONTROL + SHIFT + P` type `Entropy: New Cartridge`)
+* Create new cartridge by running `Tools > Entropy > New Cartridge`. (For "Command Palette" command `COMMAND/CONTROL + SHIFT + P` type `Entropy: New Cartridge`)
