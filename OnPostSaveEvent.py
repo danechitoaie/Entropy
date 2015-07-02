@@ -38,9 +38,12 @@ class EntropyOnPostSaveEvent(sublime_plugin.EventListener):
         dw_password  = entropy_data.get("password")
         dw_directory = entropy_data.get("directory")
 
-        entropy_settings      = sublime.load_settings("Entropy.sublime-settings")
-        entropy_settings_vssl = entropy_settings.get("verify_ssl_certificates", True)
-        entropy_settings_vcd  = entropy_settings.get("verify_code_directory", True)
+        entropy_settings       = sublime.load_settings("Entropy.sublime-settings")
+        entropy_settings_vssl  = entropy_settings.get("verify_ssl_certificates", True) is True
+        entropy_settings_vcd   = entropy_settings.get("verify_code_directory", True) is True
+        entropy_cache_path     = os.path.join(sublime.cache_path(), "Entropy")
+        entropy_certs_path     = os.path.join(sublime.cache_path(), "Entropy", "entropy.pem")
+        entropy_CA_BUNDLE_PATH = entropy_certs_path if entropy_settings_vssl else False
 
         # Loop trought the folders that belong to this project
         for project_folder in project_data.get("folders", []):
@@ -74,7 +77,7 @@ class EntropyOnPostSaveEvent(sublime_plugin.EventListener):
                 # Check if parent directory of the file exists on the server
                 r_file_d = os.path.dirname(r_file_path).strip("/")
                 req1_url = "https://{0}/on/demandware.servlet/webdav/Sites/Cartridges/{1}/{2}".format(dw_hostname, dw_directory, r_file_d)
-                req1     = requests.head(req1_url, auth=(dw_username, dw_password), verify=entropy_settings_vssl)
+                req1     = requests.head(req1_url, auth=(dw_username, dw_password), verify=entropy_CA_BUNDLE_PATH)
 
                 # Authentication failed
                 if req1.status_code == requests.codes.UNAUTHORIZED:
@@ -84,7 +87,7 @@ class EntropyOnPostSaveEvent(sublime_plugin.EventListener):
                 if req1.status_code == requests.codes.NOT_FOUND:
                     # Check if the code directory exists on the server
                     req2_url = "https://{0}/on/demandware.servlet/webdav/Sites/Cartridges/{1}".format(dw_hostname, dw_directory)
-                    req2     = requests.head(req2_url, auth=(dw_username, dw_password), verify=entropy_settings_vssl)
+                    req2     = requests.head(req2_url, auth=(dw_username, dw_password), verify=entropy_CA_BUNDLE_PATH)
 
                     # Authentication failed
                     if req2.status_code == requests.codes.UNAUTHORIZED:
@@ -99,7 +102,7 @@ class EntropyOnPostSaveEvent(sublime_plugin.EventListener):
                         # verify_code_directory is False so we are ok to create the directory
                         else:
                             req3_url = "https://{0}/on/demandware.servlet/webdav/Sites/Cartridges/{1}".format(dw_hostname, dw_directory)
-                            req3     = requests.request("MKCOL", req3_url, auth=(dw_username, dw_password), verify=entropy_settings_vssl)
+                            req3     = requests.request("MKCOL", req3_url, auth=(dw_username, dw_password), verify=entropy_CA_BUNDLE_PATH)
 
                             # Authentication failed
                             if req3.status_code == requests.codes.UNAUTHORIZED:
@@ -114,7 +117,7 @@ class EntropyOnPostSaveEvent(sublime_plugin.EventListener):
                     # Loop trough directories in the path and check if they exists or if they need to be created
                     for req4_url_path in r_file_d.split("/"):
                         req4_url = "{0}/{1}".format(req4_url, req4_url_path)
-                        req4     = requests.head(req4_url, auth=(dw_username, dw_password), verify=entropy_settings_vssl)
+                        req4     = requests.head(req4_url, auth=(dw_username, dw_password), verify=entropy_CA_BUNDLE_PATH)
 
                         # Authentication failed
                         if req4.status_code == requests.codes.UNAUTHORIZED:
@@ -123,7 +126,7 @@ class EntropyOnPostSaveEvent(sublime_plugin.EventListener):
                         # Directory does not exist
                         if req4.status_code == requests.codes.NOT_FOUND:
                             req5_url = req4_url
-                            req5     = requests.request("MKCOL", req5_url, auth=(dw_username, dw_password), verify=entropy_settings_vssl)
+                            req5     = requests.request("MKCOL", req5_url, auth=(dw_username, dw_password), verify=entropy_CA_BUNDLE_PATH)
 
                             # Authentication failed
                             if req5.status_code == requests.codes.UNAUTHORIZED:
@@ -136,7 +139,7 @@ class EntropyOnPostSaveEvent(sublime_plugin.EventListener):
                 # Upload the file
                 with open(l_file_path, "rb") as f:
                     req6_url = "https://{0}/on/demandware.servlet/webdav/Sites/Cartridges/{1}/{2}".format(dw_hostname, dw_directory, r_file_path)
-                    req6     = requests.put(req6_url, auth=(dw_username, dw_password), data=f, verify=entropy_settings_vssl)
+                    req6     = requests.put(req6_url, auth=(dw_username, dw_password), data=f, verify=entropy_CA_BUNDLE_PATH)
 
                     # Authentication failed
                     if req6.status_code == requests.codes.UNAUTHORIZED:

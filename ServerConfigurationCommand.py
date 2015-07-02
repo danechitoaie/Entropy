@@ -92,7 +92,7 @@ class EntropyServerConfigurationCommand(sublime_plugin.WindowCommand):
 
         self.dw_password = password
 
-        sublime.set_timeout_async(lambda: self.step4_run_async(), 0)
+        sublime.set_timeout_async(lambda self=self: self.step4_run_async(), 0)
 
     # Get the code directories from the server and display the one that's active
     def step4_run_async(self):
@@ -101,8 +101,11 @@ class EntropyServerConfigurationCommand(sublime_plugin.WindowCommand):
         panel_label  = "Code Directory:"
         panel_value  = entropy_data.get("directory", "")
 
-        entropy_settings      = sublime.load_settings("Entropy.sublime-settings")
-        entropy_settings_vssl = entropy_settings.get("verify_ssl_certificates", True)
+        entropy_settings       = sublime.load_settings("Entropy.sublime-settings")
+        entropy_settings_vssl  = entropy_settings.get("verify_ssl_certificates", True) is True
+        entropy_cache_path     = os.path.join(sublime.cache_path(), "Entropy")
+        entropy_certs_path     = os.path.join(sublime.cache_path(), "Entropy", "entropy.pem")
+        entropy_CA_BUNDLE_PATH = entropy_certs_path if entropy_settings_vssl else False
 
         self.animation.start()
 
@@ -110,7 +113,7 @@ class EntropyServerConfigurationCommand(sublime_plugin.WindowCommand):
             request_url  = "https://{0}/on/demandware.servlet/studiosvc/Sites".format(self.dw_hostname)
             request_auth = (self.dw_username, self.dw_password)
             request_json = {"getAPIVersionReq" : ""}
-            api_request  = requests.post(request_url, auth=request_auth, json=request_json, verify=entropy_settings_vssl)
+            api_request  = requests.post(request_url, auth=request_auth, json=request_json, verify=entropy_CA_BUNDLE_PATH)
 
             # Authentication failed
             if api_request.status_code == requests.codes.UNAUTHORIZED:

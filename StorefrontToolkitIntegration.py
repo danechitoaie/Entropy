@@ -87,7 +87,7 @@ def run_storefront_toolkit_httpd():
 
 def plugin_loaded():
     entropy_settings      = sublime.load_settings("Entropy.sublime-settings")
-    entropy_settings_sftk = entropy_settings.get("storefront_toolkit_integration", False)
+    entropy_settings_sftk = entropy_settings.get("storefront_toolkit_integration", False) is True
 
     if entropy_settings_sftk:
             # Start the HTTP server async so that we don't block the UI thread

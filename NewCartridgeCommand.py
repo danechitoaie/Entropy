@@ -75,10 +75,10 @@ class EntropyNewCartridgeCommand(sublime_plugin.WindowCommand):
         self.cartridge_name = None
         self.cartridge_path = None
 
-        sublime.set_timeout_async(lambda: self.make_cartridge_async(cartridge_name, cartridge_path), 0)
+        sublime.set_timeout_async(lambda self=self: self.make_cartridge(cartridge_name, cartridge_path), 0)
 
     # Create the cartridge async in a worker process
-    def make_cartridge_async(self, cartridge_name, cartridge_path):
+    def make_cartridge(self, cartridge_name, cartridge_path):
         dirs_to_make = [
                 os.path.join(cartridge_path, cartridge_name),
                 os.path.join(cartridge_path, cartridge_name, "cartridge"),

@@ -18,7 +18,7 @@ from .lib import exceptions
 
 class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
     def run(self):
-        sublime.set_timeout_async(lambda: self.clean_project(), 0)
+        sublime.set_timeout_async(lambda self=self: self.clean_project(), 0)
 
     def clean_project(self):
         if not self.window.project_file_name():
@@ -46,9 +46,12 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
         dw_password  = entropy_data.get("password")
         dw_directory = entropy_data.get("directory")
 
-        entropy_settings      = sublime.load_settings("Entropy.sublime-settings")
-        entropy_settings_vssl = entropy_settings.get("verify_ssl_certificates", True)
-        entropy_settings_vcd  = entropy_settings.get("verify_code_directory", True)
+        entropy_settings       = sublime.load_settings("Entropy.sublime-settings")
+        entropy_settings_vssl  = entropy_settings.get("verify_ssl_certificates", True) is True
+        entropy_settings_vcd   = entropy_settings.get("verify_code_directory", True) is True
+        entropy_cache_path     = os.path.join(sublime.cache_path(), "Entropy")
+        entropy_certs_path     = os.path.join(sublime.cache_path(), "Entropy", "entropy.pem")
+        entropy_CA_BUNDLE_PATH = entropy_certs_path if entropy_settings_vssl else False
 
         animation = animations.EntropyCleanProjectAnimation(self.window)
         animation.start()
@@ -56,7 +59,7 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
         try:
             # Check if the code directory exists on the server
             req1_url = "https://{0}/on/demandware.servlet/webdav/Sites/Cartridges/{1}".format(dw_hostname, dw_directory)
-            req1     = requests.head(req1_url, auth=(dw_username, dw_password), verify=entropy_settings_vssl)
+            req1     = requests.head(req1_url, auth=(dw_username, dw_password), verify=entropy_CA_BUNDLE_PATH)
 
             # Authentication failed
             if req1.status_code == requests.codes.UNAUTHORIZED:
@@ -71,7 +74,7 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
                 # verify_code_directory is False so we are ok to create the directory
                 else:
                     req2_url = "https://{0}/on/demandware.servlet/webdav/Sites/Cartridges/{1}".format(dw_hostname, dw_directory)
-                    req2     = requests.request("MKCOL", req2_url, auth=(dw_username, dw_password), verify=entropy_settings_vssl)
+                    req2     = requests.request("MKCOL", req2_url, auth=(dw_username, dw_password), verify=entropy_CA_BUNDLE_PATH)
 
                     # Authentication failed
                     if req2.status_code == requests.codes.UNAUTHORIZED:
@@ -91,7 +94,7 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
                     "   </a:prop>\n",
                     "</a:propfind>\n",
                 ])
-            req3     = requests.request("PROPFIND", req3_url, auth=(dw_username, dw_password), data=req3_xml, headers={"Depth" : "1"}, verify=entropy_settings_vssl)
+            req3     = requests.request("PROPFIND", req3_url, auth=(dw_username, dw_password), data=req3_xml, headers={"Depth" : "1"}, verify=entropy_CA_BUNDLE_PATH)
 
             # Authentication failed
             if req3.status_code == requests.codes.UNAUTHORIZED:
@@ -108,7 +111,7 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
             for xml_href in xml_hrefs:
                 req4_href = xml_href.text
                 req4_url  = "https://{0}{1}".format(dw_hostname, req4_href)
-                req4      = requests.delete(req4_url, auth=(dw_username, dw_password), verify=entropy_settings_vssl)
+                req4      = requests.delete(req4_url, auth=(dw_username, dw_password), verify=entropy_CA_BUNDLE_PATH)
 
                 # Authentication failed
                 if req4.status_code == requests.codes.UNAUTHORIZED:
@@ -165,7 +168,7 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
                 with open(f_pth, "rb") as f_tmp:
                     # Uploading entropy_project.zip
                     req5_url = "https://{0}/on/demandware.servlet/webdav/Sites/Cartridges/{1}/entropy_project.zip".format(dw_hostname, dw_directory)
-                    req5     = requests.put(req5_url, auth=(dw_username, dw_password), data=f_tmp, verify=entropy_settings_vssl)
+                    req5     = requests.put(req5_url, auth=(dw_username, dw_password), data=f_tmp, verify=entropy_CA_BUNDLE_PATH)
 
                     # Authentication failed
                     if req5.status_code == requests.codes.UNAUTHORIZED:
@@ -177,7 +180,7 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
 
             # Extracting entropy_project.zip
             req6_url = "https://{0}/on/demandware.servlet/webdav/Sites/Cartridges/{1}/entropy_project.zip".format(dw_hostname, dw_directory)
-            req6     = requests.post(req6_url, auth=(dw_username, dw_password), data={"method" : "UNZIP"}, verify=entropy_settings_vssl)
+            req6     = requests.post(req6_url, auth=(dw_username, dw_password), data={"method" : "UNZIP"}, verify=entropy_CA_BUNDLE_PATH)
 
             # Authentication failed
             if req6.status_code == requests.codes.UNAUTHORIZED:
@@ -189,7 +192,7 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
 
             # Deleting entropy_project.zip
             req7_url = "https://{0}/on/demandware.servlet/webdav/Sites/Cartridges/{1}/entropy_project.zip".format(dw_hostname, dw_directory)
-            req7     = requests.delete(req7_url, auth=(dw_username, dw_password), verify=entropy_settings_vssl)
+            req7     = requests.delete(req7_url, auth=(dw_username, dw_password), verify=entropy_CA_BUNDLE_PATH)
 
             # Authentication failed
             if req7.status_code == requests.codes.UNAUTHORIZED:
