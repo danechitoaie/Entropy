@@ -21,6 +21,14 @@ class EntropyCleanProjectCommand(sublime_plugin.WindowCommand):
         sublime.set_timeout_async(lambda self=self: self.clean_project(), 0)
 
     def clean_project(self):
+        if not sublime.ok_cancel_dialog("".join([
+                "WARNING!\n\n",
+                "This will erase all the files from your remote code directory ",
+                "and replace them with the cartridges in this project.\n\n",
+                "Do you want to continue?",
+            ])):
+            return
+
         if not self.window.project_file_name():
             sublime.error_message("".join([
                     "ERROR!\n\n",
